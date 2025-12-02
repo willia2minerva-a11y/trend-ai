@@ -1,3 +1,4 @@
+# config.py - مُحسَّن
 import os
 from dotenv import load_dotenv
 
@@ -16,14 +17,28 @@ class Config:
     DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
     PORT = int(os.getenv('PORT', 5000))
     
-    # تأكد من وجود المفاتيح الأساسية
+    # إعدادات المحتوى
+    DEFAULT_LANGUAGE = 'ar'  # العربية
+    SUPPORTED_LANGUAGES = ['ar', 'en']
+    POST_TIMES = ['09:00', '13:00', '18:00']  # أوقات النشر
+    
     @classmethod
     def validate(cls):
-        required = ['PAGE_ACCESS_TOKEN', 'PAGE_ID', 'GEMINI_API_KEY']
-        missing = [key for key in required if not getattr(cls, key)]
+        """التحقق من صحة الإعدادات"""
+        required = [
+            ('PAGE_ACCESS_TOKEN', 'Facebook Page Access Token'),
+            ('PAGE_ID', 'Facebook Page ID'),
+            ('GEMINI_API_KEY', 'Gemini API Key')
+        ]
+        
+        missing = []
+        for key, name in required:
+            if not getattr(cls, key):
+                missing.append(name)
         
         if missing:
-            raise ValueError(f"Missing required config: {missing}")
+            print(f"❌ Missing: {', '.join(missing)}")
+            return False
         
-        print("✅ Configuration loaded successfully!")
+        print("✅ Config loaded successfully!")
         return True
