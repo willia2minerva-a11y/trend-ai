@@ -1,0 +1,2 @@
+# trend-ai
+trend ai
